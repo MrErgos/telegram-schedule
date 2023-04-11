@@ -1,4 +1,4 @@
-package ru.popov.telegrambot.service;
+package com.example.telegramschedule.service;
 
 import java.util.TimerTask;
 

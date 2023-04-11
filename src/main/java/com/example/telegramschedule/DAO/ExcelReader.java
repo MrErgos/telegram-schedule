@@ -1,6 +1,6 @@
-package com.example.telegramschedule.service;
+package com.example.telegramschedule.DAO;
 
-import com.example.telegramschedule.User;
+import com.example.telegramschedule.entity.User;
 import lombok.Getter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -8,19 +8,25 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
+@Service
 public class ExcelReader {
     @Getter
     private XSSFWorkbook excelBook;
     private String fileName;
     private static final Logger logger = LoggerFactory.getLogger(ExcelReader.class);
-    public ExcelReader(String fileName) {
+
+    public ExcelReader(@Value("${excel.fileName}")String fileName) {
         try {
             excelBook = new XSSFWorkbook(new FileInputStream(fileName));
             this.fileName = fileName;
@@ -124,6 +130,24 @@ public class ExcelReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<User> getAllUser() {
+        List<User> users = new ArrayList<>();
+        XSSFSheet sheet = excelBook.getSheet("Users");
+        Iterator rowIter = sheet.rowIterator();
+        while (rowIter.hasNext()) {
+            XSSFRow row = (XSSFRow) rowIter.next();
+            Iterator cellIter = row.cellIterator();
+            XSSFCell cell = (XSSFCell) cellIter.next();
+            long userID = (long) cell.getNumericCellValue();
+            boolean isAlarmEveryDay = ((XSSFCell) cellIter.next()).getBooleanCellValue();
+            boolean isAlarmEveryClass = ((XSSFCell) cellIter.next()).getBooleanCellValue();
+            String group = ((XSSFCell) cellIter.next()).getStringCellValue();
+            User user = new User(userID, isAlarmEveryClass, isAlarmEveryDay, group);
+            users.add(user);
+        }
+        return users;
     }
 
     public User getUser(long id) {

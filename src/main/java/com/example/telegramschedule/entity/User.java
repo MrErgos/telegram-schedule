@@ -1,4 +1,4 @@
-package com.example.telegramschedule;
+package com.example.telegramschedule.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
