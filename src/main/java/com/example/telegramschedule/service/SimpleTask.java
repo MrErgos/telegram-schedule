@@ -2,7 +2,6 @@ package com.example.telegramschedule.service;
 
 import java.util.TimerTask;
 
-//task wrapper
 public class SimpleTask extends TimerTask {
     private final SendEvent sendEvent;
 

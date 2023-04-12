@@ -9,7 +9,7 @@ class TelegramScheduleApplicationTests {
 
     @Test
     void contextLoads() {
-        assertThat(new ExcelReader("src/main/java/com/example/telegramschedule/расписание.xlsx")).isNotNull();
+        assertThat(new ExcelReader("src/main/java/com/example/telegramschedule/schedule.xlsx")).isNotNull();
     }
 
 }
