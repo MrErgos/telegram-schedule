@@ -9,5 +9,6 @@ public enum BotState {
     FRIDAY,
     SECOND_STEP,
     DAYSCHEDULE,
-    THIRD_STEP
+    THIRD_STEP,
+    SETTINGS
 }

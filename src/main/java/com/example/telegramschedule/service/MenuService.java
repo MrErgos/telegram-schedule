@@ -1,13 +1,13 @@
 package com.example.telegramschedule.service;
 
-import com.example.telegramschedule.DAO.ExcelReader;
+import com.example.telegramschedule.DAO.DayDAO;
+import com.example.telegramschedule.DAO.UserDAO;
 import com.example.telegramschedule.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -20,14 +20,14 @@ import java.util.List;
 @Setter
 public class MenuService {
 
-    private ExcelReader reader;
+    private DayDAO reader;
+    private UserDAO userDAO;
 
-    public MenuService(ExcelReader reader) {
-        this.reader = reader;
+    public MenuService(UserDAO dayDAO) {
+        this.userDAO = dayDAO;
     }
 
     public SendMessage firstStep(Long chatId) {
-        reader.createUser(new User(chatId, false, false, ""));
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setSelective(true);
         replyKeyboardMarkup.setResizeKeyboard(true);
@@ -43,8 +43,7 @@ public class MenuService {
         replyKeyboardMarkup.setKeyboard(keyboard);
         SendMessage request = SendMessage.builder()
                 .chatId(chatId)
-                .text("Для начала я должен понять, что вам нужно от меня. " +
-                "Вам нужно напоминать какие занятия будут завтра?")
+                .text("Вам нужно напоминать какие занятия будут завтра?")
                 .parseMode(ParseMode.HTML)
                 .disableWebPagePreview(true)
                 .disableNotification(true)
@@ -63,13 +62,16 @@ public class MenuService {
 
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
+        KeyboardRow row3 = new KeyboardRow();
         row1.add(new KeyboardButton("Понедельник"));
         row1.add(new KeyboardButton("Вторник"));
         row2.add(new KeyboardButton("Среда"));
         row2.add(new KeyboardButton("Четверг"));
         row2.add(new KeyboardButton("Пятница"));
+        row3.add(new KeyboardButton("Хочу изменить настройки"));
         keyboard.add(row1);
         keyboard.add(row2);
+        keyboard.add(row3);
         replyKeyboardMarkup.setKeyboard(keyboard);
         SendMessage request = SendMessage.builder()
                 .chatId(chatId)
@@ -116,6 +118,36 @@ public class MenuService {
                 .replyToMessageId(1)
         .build();
 
+        return request;
+    }
+
+    public SendMessage getSettings(Long chatId) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        List<KeyboardRow> keyboard = new ArrayList<>();
+
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        KeyboardRow row3 = new KeyboardRow();
+        KeyboardRow row4 = new KeyboardRow();
+        row1.add(new KeyboardButton("Изменить алярм каждый день"));
+        row2.add(new KeyboardButton("Изменить алярм каждое занятие"));
+        row3.add(new KeyboardButton("Изменить группу"));
+        row4.add(new KeyboardButton('\u2190' + "Назад"));
+        keyboard.add(row1);
+        keyboard.add(row2);
+        keyboard.add(row3);
+        keyboard.add(row4);
+        replyKeyboardMarkup.setKeyboard(keyboard);
+        SendMessage request = SendMessage.builder()
+                .text("Вот и настройки")
+                .parseMode(ParseMode.HTML)
+                .chatId(chatId)
+                .replyToMessageId(1)
+                .replyMarkup(replyKeyboardMarkup)
+                .build();
         return request;
     }
 }

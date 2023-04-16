@@ -1,15 +1,12 @@
 package com.example.telegramschedule.model;
 
-import com.example.telegramschedule.DAO.ExcelReader;
+import com.example.telegramschedule.DAO.UserDAO;
 import com.example.telegramschedule.entity.User;
 import com.example.telegramschedule.model.handler.MessageHandler;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -19,44 +16,62 @@ public class TelegramFacade {
 
     final MessageHandler messageHandler;
 
-    ExcelReader reader;
+    UserDAO userDAO;
 
-    public TelegramFacade(MessageHandler messageHandler, ExcelReader reader) {
+    public TelegramFacade(MessageHandler messageHandler, UserDAO userDAO) {
         this.messageHandler = messageHandler;
-        this.reader = reader;
+        this.userDAO = userDAO;
     }
 
     public BotApiMethod<?> handleUpdate(Update update) {
         Message message = update.getMessage();
         BotState botState;
-        User user = reader.getUser(message.getChatId());
+        if (!userDAO.isExist(message.getChatId())) {
+            User user = new User();
+            user.setId(message.getChatId());
+            userDAO.save(user);
+            return messageHandler.handle(message.getChatId(), BotState.THIRD_STEP, "");
+        }
+        User user = userDAO.getOne(message.getChatId());
         switch (message.getText()) {
-            case "/start": {
+            case "Хочу изменить настройки": {
+                botState = BotState.SETTINGS;
+                break;
+            }
+            case "Изменить группу": {
+                botState = BotState.THIRD_STEP;
+                break;
+            }
+            case "Изменить алярм каждый день": {
                 botState = BotState.FIRST_STEP;
+                break;
+            }
+            case "Изменить алярм каждое занятие": {
+                botState = BotState.SECOND_STEP;
                 break;
             }
             case "Да, нужно отправлять каждый день": {
                 user.setAlarmEveryDay(true);
-                reader.editUser(user);
-                botState = BotState.SECOND_STEP;
+                userDAO.save(user);
+                botState = BotState.DAYSCHEDULE;
                 break;
             }
             case "Нет, не нужно отправлять каждый день": {
                 user.setAlarmEveryDay(false);
-                reader.editUser(user);
-                botState = BotState.SECOND_STEP;
+                userDAO.save(user);
+                botState = BotState.DAYSCHEDULE;
                 break;
             }
             case "Да, нужно отправлять каждую пару": {
                 user.setAlarmEveryClass(true);
-                reader.editUser(user);
-                botState = BotState.THIRD_STEP;
+                userDAO.save(user);
+                botState = BotState.DAYSCHEDULE;
                 break;
             }
             case "Нет, не нужно отправлять каждую пару": {
                 user.setAlarmEveryClass(false);
-                reader.editUser(user);
-                botState = BotState.THIRD_STEP;
+                userDAO.save(user);
+                botState = BotState.DAYSCHEDULE;
                 break;
             }
             case "Понедельник": {
@@ -79,10 +94,14 @@ public class TelegramFacade {
                 botState = BotState.FRIDAY;
                 break;
             }
+            case '\u2190' + "Назад": {
+                botState = BotState.DAYSCHEDULE;
+                break;
+            }
             default: {
                 if (message.getText().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
                     user.setGroup(message.getText());
-                    reader.editUser(user);
+                    userDAO.save(user);
                     botState = BotState.DAYSCHEDULE;
                 }
                 else {
@@ -90,6 +109,9 @@ public class TelegramFacade {
                 }
                 break;
             }
+        }
+        if (user.getGroup() == null || user.getGroup().isEmpty()) {
+            return messageHandler.handle(message.getChatId(), BotState.THIRD_STEP, "");
         }
         return messageHandler.handle(message.getChatId(), botState, user.getGroup());
 
