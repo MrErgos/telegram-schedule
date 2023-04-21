@@ -28,7 +28,7 @@ public class EventService {
     }
 
     //start service in 8:30 MON-FRI cron = "35 15 * * * MON-FRI"
-    @Scheduled(cron = "*/10 * * * * MON-FRI")
+    @Scheduled(cron = "* 30 8 * * MON-FRI")
     private void eventService() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
