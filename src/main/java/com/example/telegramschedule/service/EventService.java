@@ -2,6 +2,7 @@ package com.example.telegramschedule.service;
 
 import com.example.telegramschedule.DAO.DayDAO;
 import com.example.telegramschedule.DAO.UserDAO;
+import com.example.telegramschedule.entity.Day;
 import com.example.telegramschedule.entity.User;
 import com.example.telegramschedule.model.BotState;
 import com.example.telegramschedule.model.handler.MessageHandler;
@@ -88,108 +89,50 @@ public class EventService {
         MenuService menuService = new MenuService(userDAO);
 
         for (User user : users) {
+            Day today = dayDAO.findDayByDayNameAndGroup(String.valueOf(day), user.getGroup());
+            if (today.getCountOfClasses() != 0) {
+                String classInfo = dayDAO.getClass(user.getGroup(), day, 1);
+                SendEvent sendEvent = new SendEvent();
+                SendMessage message;
+                Long userId = user.getId();
+                message = menuService.getDayScheduleKeyboard(userId, classInfo != null ? classInfo : "Поздравляю сейчас окно.");
+                sendEvent.setSendMessage(message);
 
-            Long userId = user.getId();
-
-            SendEvent sendEvent = new SendEvent();
-            SendMessage message;
-            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
-                message = menuService.thirdStep(userId);
-            } else {
-                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 1));
+                new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
             }
-            sendEvent.setSendMessage(message);
+            else {
+                SendEvent sendEvent = new SendEvent();
+                SendMessage message;
+                Long userId = user.getId();
+                message = menuService.getDayScheduleKeyboard(userId, today.toString());
+                sendEvent.setSendMessage(message);
 
-            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
+                new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
+            }
         }
     }
 
     @Scheduled(cron = "* 30 10 * * MON-FRI")
     private void secondClass() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-
-        List<User> users = userDAO.findAllUsers();
-        users.removeIf(user -> !user.isAlarmEveryClass());
-
-        MenuService menuService = new MenuService(userDAO);
-
-        for (User user : users) {
-
-            Long userId = user.getId();
-
-            SendEvent sendEvent = new SendEvent();
-            SendMessage message;
-            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
-                message = menuService.thirdStep(userId);
-            } else {
-                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 2));
-            }
-            sendEvent.setSendMessage(message);
-
-            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
-        }
+        classAlarm(2);
     }
 
     @Scheduled(cron = "* 30 12 * * MON-FRI")
     private void thirdClass() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-
-        List<User> users = userDAO.findAllUsers();
-        users.removeIf(user -> !user.isAlarmEveryClass());
-
-        MenuService menuService = new MenuService(userDAO);
-
-        for (User user : users) {
-
-            Long userId = user.getId();
-
-            SendEvent sendEvent = new SendEvent();
-            SendMessage message;
-            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
-                message = menuService.thirdStep(userId);
-            } else {
-                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 3));
-            }
-            sendEvent.setSendMessage(message);
-
-            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
-        }
+        classAlarm(3);
     }
 
     @Scheduled(cron = "* 30 14 * * MON-FRI")
     private void forthClass() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-
-        List<User> users = userDAO.findAllUsers();
-        users.removeIf(user -> !user.isAlarmEveryClass());
-
-        MenuService menuService = new MenuService(userDAO);
-
-        for (User user : users) {
-
-            Long userId = user.getId();
-
-            SendEvent sendEvent = new SendEvent();
-            SendMessage message;
-            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
-                message = menuService.thirdStep(userId);
-            } else {
-                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 4));
-            }
-            sendEvent.setSendMessage(message);
-
-            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
-        }
+        classAlarm(4);
     }
 
     @Scheduled(cron = "* 30 16 * * MON-FRI")
     private void fifthClass() {
+        classAlarm(5);
+    }
+
+    private void classAlarm(int classInDay) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         int day = calendar.get(Calendar.DAY_OF_WEEK);
@@ -200,19 +143,16 @@ public class EventService {
         MenuService menuService = new MenuService(userDAO);
 
         for (User user : users) {
+            if (dayDAO.findDayByDayNameAndGroup(String.valueOf(day), user.getGroup()).getCountOfClasses() != 0) {
+                String classInfo = dayDAO.getClass(user.getGroup(), day, classInDay);
+                SendEvent sendEvent = new SendEvent();
+                SendMessage message;
+                Long userId = user.getId();
+                message = menuService.getDayScheduleKeyboard(userId, classInfo != null ? classInfo : "Поздравляю сейчас окно.");
+                sendEvent.setSendMessage(message);
 
-            Long userId = user.getId();
-
-            SendEvent sendEvent = new SendEvent();
-            SendMessage message;
-            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
-                message = menuService.thirdStep(userId);
-            } else {
-                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 5));
+                new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
             }
-            sendEvent.setSendMessage(message);
-
-            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
         }
     }
 }

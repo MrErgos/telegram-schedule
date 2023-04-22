@@ -36,33 +36,37 @@ public class Day {
     @Column(name = "class_5")
     private String class_5;
 
+    public int getCountOfClasses() {
+        int countOfClassTime = 0;
+        if (class_1 != null && !class_1.isEmpty()) {
+            countOfClassTime++;
+        }
+        if (class_2 != null && !class_2.isEmpty()) {
+            countOfClassTime++;
+        }
+        if (class_3 != null && !class_3.isEmpty()) {
+            countOfClassTime++;
+        }
+        if (class_4 != null && !class_4.isEmpty()) {
+            countOfClassTime++;
+        }
+        if (class_5 != null && !class_5.isEmpty()) {
+            countOfClassTime++;
+        }
+        return countOfClassTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        int countOfNonClassTime = 5;
-        if (class_1 != null && !class_1.isEmpty()) {
-            builder.append("<b>Первая пара: 09.00 - 10.35</b> \n\n" + "➤ " + getClass_1() + "\n");
-            countOfNonClassTime--;
-        }
-        if (class_2 != null && !class_2.isEmpty()) {
-            builder.append("<b>Вторая пара: 10.55 - 12.30</b>\n\n" + "➤ " + getClass_2() + "\n");
-            countOfNonClassTime--;
-        }
-        if (class_3 != null && !class_3.isEmpty()) {
-            builder.append("<b>Третья пара: 13.00 - 14.35</b>\n\n" + "➤ " + getClass_3() + "\n");
-            countOfNonClassTime--;
-        }
-        if (class_4 != null && !class_4.isEmpty()) {
-            builder.append("<b>Четвертая пара: 14.55 - 16.30</b>\n\n" + "➤ " + getClass_4() + "\n");
-            countOfNonClassTime--;
-        }
-        if (class_5 != null && !class_5.isEmpty()) {
-            builder.append("<b>Пятая пара: 16.50 - 18.25</b>\n\n" + "➤ " + getClass_5() + "\n");
-            countOfNonClassTime--;
-        }
-        if (countOfNonClassTime == 5) {
+        if (getCountOfClasses() == 0) {
             return "В этот день пар нет. Отдыхай!\n";
         }
+        builder.append("<b>Первая пара: 09.00 - 10.35</b> \n\n" + "➤ " + getClass_1() + "\n");
+        builder.append("<b>Вторая пара: 10.55 - 12.30</b>\n\n" + "➤ " + getClass_2() + "\n");
+        builder.append("<b>Третья пара: 13.00 - 14.35</b>\n\n" + "➤ " + getClass_3() + "\n");
+        builder.append("<b>Четвертая пара: 14.55 - 16.30</b>\n\n" + "➤ " + getClass_4() + "\n");
+        builder.append("<b>Пятая пара: 16.50 - 18.25</b>\n\n" + "➤ " + getClass_5() + "\n");
         return builder.toString();
     }
 
