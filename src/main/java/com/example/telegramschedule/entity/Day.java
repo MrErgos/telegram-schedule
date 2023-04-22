@@ -62,11 +62,11 @@ public class Day {
         if (getCountOfClasses() == 0) {
             return "В этот день пар нет. Отдыхай!\n";
         }
-        builder.append("<b>Первая пара: 09.00 - 10.35</b> \n\n" + "➤ " + getClass_1() + "\n");
-        builder.append("<b>Вторая пара: 10.55 - 12.30</b>\n\n" + "➤ " + getClass_2() + "\n");
-        builder.append("<b>Третья пара: 13.00 - 14.35</b>\n\n" + "➤ " + getClass_3() + "\n");
-        builder.append("<b>Четвертая пара: 14.55 - 16.30</b>\n\n" + "➤ " + getClass_4() + "\n");
-        builder.append("<b>Пятая пара: 16.50 - 18.25</b>\n\n" + "➤ " + getClass_5() + "\n");
+        builder.append("<b>Первая пара: 09.00 - 10.35</b> \n" + "➤ " + getClass_1() + "\n\n");
+        builder.append("<b>Вторая пара: 10.55 - 12.30</b>\n" + "➤ " + getClass_2() + "\n\n");
+        builder.append("<b>Третья пара: 13.00 - 14.35</b>\n" + "➤ " + getClass_3() + "\n\n");
+        builder.append("<b>Четвертая пара: 14.55 - 16.30</b>\n" + "➤ " + getClass_4() + "\n\n");
+        builder.append("<b>Пятая пара: 16.50 - 18.25</b>\n" + "➤ " + getClass_5() + "\n");
         return builder.toString();
     }
 
