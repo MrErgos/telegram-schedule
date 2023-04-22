@@ -2,7 +2,6 @@ package com.example.telegramschedule.service;
 
 import com.example.telegramschedule.DAO.DayDAO;
 import com.example.telegramschedule.DAO.UserDAO;
-import com.example.telegramschedule.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
@@ -150,4 +149,6 @@ public class MenuService {
                 .build();
         return request;
     }
+
+
 }

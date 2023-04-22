@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,6 +37,8 @@ public class EventService {
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
         List<User> users = userDAO.findAllUsers();
+
+        users.removeIf(user -> !user.isAlarmEveryDay());
 
         MessageHandler messageHandler = new MessageHandler(dayDAO, new MenuService(userDAO));
 
@@ -67,6 +70,147 @@ public class EventService {
                 }
             }
             sendEvent.setSendMessage(messageHandler.handle(userId, botState, user.getGroup()));
+
+            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
+        }
+    }
+
+    @Scheduled(cron = "* 30 8 * * MON-FRI")
+    private void firstClass() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        List<User> users = userDAO.findAllUsers();
+        users.removeIf(user -> !user.isAlarmEveryClass());
+        users.removeIf(User::isAlarmEveryDay);
+
+        MenuService menuService = new MenuService(userDAO);
+
+        for (User user : users) {
+
+            Long userId = user.getId();
+
+            SendEvent sendEvent = new SendEvent();
+            SendMessage message;
+            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
+                message = menuService.thirdStep(userId);
+            } else {
+                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 1));
+            }
+            sendEvent.setSendMessage(message);
+
+            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
+        }
+    }
+
+    @Scheduled(cron = "* 30 10 * * MON-FRI")
+    private void secondClass() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        List<User> users = userDAO.findAllUsers();
+        users.removeIf(user -> !user.isAlarmEveryClass());
+
+        MenuService menuService = new MenuService(userDAO);
+
+        for (User user : users) {
+
+            Long userId = user.getId();
+
+            SendEvent sendEvent = new SendEvent();
+            SendMessage message;
+            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
+                message = menuService.thirdStep(userId);
+            } else {
+                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 2));
+            }
+            sendEvent.setSendMessage(message);
+
+            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
+        }
+    }
+
+    @Scheduled(cron = "* 30 12 * * MON-FRI")
+    private void thirdClass() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        List<User> users = userDAO.findAllUsers();
+        users.removeIf(user -> !user.isAlarmEveryClass());
+
+        MenuService menuService = new MenuService(userDAO);
+
+        for (User user : users) {
+
+            Long userId = user.getId();
+
+            SendEvent sendEvent = new SendEvent();
+            SendMessage message;
+            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
+                message = menuService.thirdStep(userId);
+            } else {
+                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 3));
+            }
+            sendEvent.setSendMessage(message);
+
+            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
+        }
+    }
+
+    @Scheduled(cron = "* 30 14 * * MON-FRI")
+    private void forthClass() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        List<User> users = userDAO.findAllUsers();
+        users.removeIf(user -> !user.isAlarmEveryClass());
+
+        MenuService menuService = new MenuService(userDAO);
+
+        for (User user : users) {
+
+            Long userId = user.getId();
+
+            SendEvent sendEvent = new SendEvent();
+            SendMessage message;
+            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
+                message = menuService.thirdStep(userId);
+            } else {
+                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 4));
+            }
+            sendEvent.setSendMessage(message);
+
+            new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
+        }
+    }
+
+    @Scheduled(cron = "* 30 16 * * MON-FRI")
+    private void fifthClass() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        List<User> users = userDAO.findAllUsers();
+        users.removeIf(user -> !user.isAlarmEveryClass());
+
+        MenuService menuService = new MenuService(userDAO);
+
+        for (User user : users) {
+
+            Long userId = user.getId();
+
+            SendEvent sendEvent = new SendEvent();
+            SendMessage message;
+            if (user.getGroup() == null || user.getGroup().isEmpty() || !user.getGroup().matches("[а-яА-Я]-[а-яА-Я] \\d{3}")) {
+                message = menuService.thirdStep(userId);
+            } else {
+                message = menuService.getDayScheduleKeyboard(userId, dayDAO.getClass(user.getGroup(), day, 5));
+            }
+            sendEvent.setSendMessage(message);
 
             new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
         }

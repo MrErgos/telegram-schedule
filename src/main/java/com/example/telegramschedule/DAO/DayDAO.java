@@ -47,6 +47,42 @@ public class DayDAO {
         }
     }
 
+    public String getClass(String group, int dayInWeek, int classInDay) {
+        if (group == null || group.isEmpty()) {
+            return "Возможно вы не указали свою группу.";
+        }
+        String resultMessage = "";
+        switch (classInDay) {
+            case 1: {
+                resultMessage = "<b>Первая пара: 09.00 - 10.35</b> \n\n" +
+                        "➤ " + findDayByDayNameAndGroup(String.valueOf(dayInWeek), group).getClass_1() + "\n";
+                return resultMessage;
+            }
+            case 2: {
+                resultMessage = "<b>Вторая пара: 10.55 - 12.30</b> \n\n" +
+                        "➤ " + findDayByDayNameAndGroup(String.valueOf(dayInWeek), group).getClass_2() + "\n";
+                return resultMessage;
+            }
+            case 3: {
+                resultMessage = "<b>Третья пара: 13.00 - 14.35</b> \n\n" +
+                        "➤ " + findDayByDayNameAndGroup(String.valueOf(dayInWeek), group).getClass_3() + "\n";
+                return resultMessage;
+            }
+            case 4: {
+                resultMessage = "<b>Четвертая пара: 14.55 - 16.30</b> \n\n" +
+                        "➤ " + findDayByDayNameAndGroup(String.valueOf(dayInWeek), group).getClass_4() + "\n";
+                return resultMessage;
+            }
+            case 5: {
+                resultMessage = "<b>Пятая пара: 16.50 - 18.25</b> \n\n" +
+                        "➤ " + findDayByDayNameAndGroup(String.valueOf(dayInWeek), group).getClass_5() + "\n";
+                return resultMessage;
+            }
+            default:
+                throw new IllegalStateException("Unexpected value: " + group + " : " + dayInWeek + " : " + classInDay);
+        }
+    }
+
     public String getMonday(String group) {
         return group != null && !group.isEmpty() ? findDayByDayNameAndGroup("1", group).toString() : "Возможно вы не указали свою группу.";
     }
