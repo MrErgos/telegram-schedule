@@ -30,12 +30,11 @@ public class EventService {
     }
 
     //start service in 8:30 MON-FRI cron = "35 15 * * * MON-FRI"
-    @Scheduled(cron = "* 30 8 * * MON-FRI")
+    @Scheduled(cron = "* 30 5 * * MON-FRI")
     private void eventService() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        int week = calendar.get(Calendar.WEEK_OF_YEAR);
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int day = calendar.get(Calendar.DAY_OF_WEEK)-1;
 
         List<User> users = userDAO.findAllUsers();
 
@@ -76,11 +75,11 @@ public class EventService {
         }
     }
 
-    @Scheduled(cron = "* 30 8 * * MON-FRI")
+    @Scheduled(cron = "* 30 5 * * MON-FRI")
     private void firstClass() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int day = calendar.get(Calendar.DAY_OF_WEEK)-1;
 
         List<User> users = userDAO.findAllUsers();
         users.removeIf(user -> !user.isAlarmEveryClass());
@@ -112,22 +111,22 @@ public class EventService {
         }
     }
 
-    @Scheduled(cron = "* 30 10 * * MON-FRI")
+    @Scheduled(cron = "* 30 7 * * MON-FRI")
     private void secondClass() {
         classAlarm(2);
     }
 
-    @Scheduled(cron = "* 30 12 * * MON-FRI")
+    @Scheduled(cron = "* 30 9 * * MON-FRI")
     private void thirdClass() {
         classAlarm(3);
     }
 
-    @Scheduled(cron = "* 30 14 * * MON-FRI")
+    @Scheduled(cron = "* 30 11 * * MON-FRI")
     private void forthClass() {
         classAlarm(4);
     }
 
-    @Scheduled(cron = "* 30 16 * * MON-FRI")
+    @Scheduled(cron = "* 30 13 * * MON-FRI")
     private void fifthClass() {
         classAlarm(5);
     }
@@ -135,7 +134,7 @@ public class EventService {
     private void classAlarm(int classInDay) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int day = calendar.get(Calendar.DAY_OF_WEEK)-1;
 
         List<User> users = userDAO.findAllUsers();
         users.removeIf(user -> !user.isAlarmEveryClass());
