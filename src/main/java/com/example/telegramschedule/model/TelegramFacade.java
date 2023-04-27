@@ -34,6 +34,14 @@ public class TelegramFacade {
         }
         User user = userDAO.getOne(message.getChatId());
         switch (message.getText()) {
+            case "/start": {
+                if (!userDAO.isExist(message.getChatId())) {
+            User user = new User();
+            user.setId(message.getChatId());
+            userDAO.save(user);
+            }
+            return messageHandler.handle(message.getChatId(), BotState.THIRD_STEP, "");
+            }
             case "Хочу изменить настройки": {
                 botState = BotState.SETTINGS;
                 break;
