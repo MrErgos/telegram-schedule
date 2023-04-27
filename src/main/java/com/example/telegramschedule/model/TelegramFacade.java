@@ -26,21 +26,15 @@ public class TelegramFacade {
     public BotApiMethod<?> handleUpdate(Update update) {
         Message message = update.getMessage();
         BotState botState;
-        if (!userDAO.isExist(message.getChatId())) {
-            User user = new User();
-            user.setId(message.getChatId());
-            userDAO.save(user);
-            return messageHandler.handle(message.getChatId(), BotState.THIRD_STEP, "");
-        }
         User user = userDAO.getOne(message.getChatId());
         switch (message.getText()) {
             case "/start": {
                 if (!userDAO.isExist(message.getChatId())) {
-            User user = new User();
-            user.setId(message.getChatId());
-            userDAO.save(user);
-            }
-            return messageHandler.handle(message.getChatId(), BotState.THIRD_STEP, "");
+                    User newUser = new User();
+                    newUser.setId(message.getChatId());
+                    userDAO.save(newUser);
+                }
+                return messageHandler.handle(message.getChatId(), BotState.THIRD_STEP, "");
             }
             case "Хочу изменить настройки": {
                 botState = BotState.SETTINGS;
