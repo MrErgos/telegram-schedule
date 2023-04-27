@@ -75,7 +75,7 @@ public class EventService {
         }
     }
 
-    @Scheduled(cron = "* 30 5 * * MON-FRI")
+    @Scheduled(cron = "0 30 5 * * MON-FRI")
     private void firstClass() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -111,22 +111,22 @@ public class EventService {
         }
     }
 
-    @Scheduled(cron = "* 30 7 * * MON-FRI")
+    @Scheduled(cron = "0 30 7 * * MON-FRI")
     private void secondClass() {
         classAlarm(2);
     }
 
-    @Scheduled(cron = "* 30 9 * * MON-FRI")
+    @Scheduled(cron = "0 30 9 * * MON-FRI")
     private void thirdClass() {
         classAlarm(3);
     }
 
-    @Scheduled(cron = "* 30 11 * * MON-FRI")
+    @Scheduled(cron = "0 30 11 * * MON-FRI")
     private void forthClass() {
         classAlarm(4);
     }
 
-    @Scheduled(cron = "* 30 13 * * MON-FRI")
+    @Scheduled(cron = "0 30 13 * * MON-FRI")
     private void fifthClass() {
         classAlarm(5);
     }
