@@ -94,7 +94,7 @@ public class EventService {
                 SendEvent sendEvent = new SendEvent();
                 SendMessage message;
                 Long userId = user.getId();
-                message = menuService.getDayScheduleKeyboard(userId, classInfo != null ? classInfo : "Поздравляю сейчас окно.");
+                message = menuService.getDayScheduleKeyboard(userId, classInfo != null && !classInfo.isEmpty() ? classInfo : "Поздравляю сейчас окно.");
                 sendEvent.setSendMessage(message);
 
                 new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());
@@ -147,7 +147,7 @@ public class EventService {
                 SendEvent sendEvent = new SendEvent();
                 SendMessage message;
                 Long userId = user.getId();
-                message = menuService.getDayScheduleKeyboard(userId, classInfo != null ? classInfo : "Поздравляю сейчас окно.");
+                message = menuService.getDayScheduleKeyboard(userId, classInfo != null && !classInfo.isEmpty() ? classInfo : "Поздравляю сейчас окно.");
                 sendEvent.setSendMessage(message);
 
                 new Timer().schedule(new SimpleTask(sendEvent), calendar.getTime());

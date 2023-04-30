@@ -46,7 +46,6 @@ public class MenuService {
                 .parseMode(ParseMode.HTML)
                 .disableWebPagePreview(true)
                 .disableNotification(true)
-                .replyToMessageId(1)
                 .replyMarkup(replyKeyboardMarkup)
                 .build();
         return request;
@@ -76,7 +75,6 @@ public class MenuService {
                 .chatId(chatId)
                 .text(text + "\nКакой день вас интересует?")
                 .parseMode(ParseMode.HTML)
-                .replyToMessageId(1)
                 .replyMarkup(replyKeyboardMarkup)
                 .build();
         return request;
@@ -102,19 +100,29 @@ public class MenuService {
                 .parseMode(ParseMode.HTML)
                 .disableWebPagePreview(true)
                 .disableNotification(true)
-                .replyToMessageId(1)
                 .replyMarkup(replyKeyboardMarkup)
                 .build();
         return request;
     }
 
     public SendMessage thirdStep(Long chatId) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        List<KeyboardRow> keyboard = new ArrayList<>();
+
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        row1.add(new KeyboardButton("Д-Э 206"));
+        row2.add(new KeyboardButton("Скоро будут и другие группы"));
+        keyboard.add(row1);
+        keyboard.add(row2);
+        replyKeyboardMarkup.setKeyboard(keyboard);
         SendMessage request = SendMessage.builder().chatId(chatId)
                 .text("Какая у вас группа, напишите ответ в виде \"Д-Э 215\"")
                 .parseMode(ParseMode.HTML)
-                .disableWebPagePreview(true)
-                .disableNotification(true)
-                .replyToMessageId(1)
+                .replyMarkup(replyKeyboardMarkup)
         .build();
 
         return request;
@@ -144,7 +152,6 @@ public class MenuService {
                 .text("Вот и настройки")
                 .parseMode(ParseMode.HTML)
                 .chatId(chatId)
-                .replyToMessageId(1)
                 .replyMarkup(replyKeyboardMarkup)
                 .build();
         return request;

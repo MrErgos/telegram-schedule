@@ -9,4 +9,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Override
     User getOne(Long aLong);
+
+    User save(User user);
 }
